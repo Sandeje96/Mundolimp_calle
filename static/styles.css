@@ -1,0 +1,1011 @@
+/*
+ * styles.css — Mundolimp_calle
+ * Mobile-first · alto contraste · área táctil ≥ 44px
+ * Fuente: system-ui (0 webfonts, peso cero)
+ * Sin Tailwind, sin build step, sin dependencias externas.
+ * Aprox. 6 KB.
+ */
+
+/* ============================================================
+   1. RESET Y VARIABLES
+   ============================================================ */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  /* Colores del semáforo — alto contraste en luz solar */
+  --rojo:        #c0392b;
+  --rojo-bg:     #fdecea;
+  --rojo-badge:  #922b21;
+
+  --verde:       #1a7a2e;
+  --verde-bg:    #eafaf1;
+  --verde-badge: #145a21;
+
+  --amarillo:    #d35400;
+  --amarillo-bg: #fef9e7;
+  --amarillo-badge: #a04000;
+
+  --gris:        #555;
+  --gris-bg:     #f5f5f5;
+  --gris-badge:  #333;
+
+  --azul:        #1a56db;
+  --azul-bg:     #eaf1fd;
+  --azul-badge:  #143da3;
+
+  /* Tipografía */
+  --fuente: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --tam-base: 16px;       /* mínimo para que iOS no haga zoom en inputs */
+  --tam-nombre: 1.1rem;
+  --tam-zona:   0.85rem;
+
+  /* Espaciados */
+  --esp-s:  8px;
+  --esp-m:  16px;
+  --esp-l:  24px;
+
+  /* Área táctil mínima */
+  --tacto:  44px;
+
+  /* Colores neutros */
+  --blanco:    #ffffff;
+  --fondo:     #f4f4f4;
+  --borde:     #d0d0d0;
+  --texto:     #1a1a1a;
+  --texto-2:   #555;
+  --primario:  #1a56db;
+  --primario-dark: #143da3;
+}
+
+/* ============================================================
+   2. BASE
+   ============================================================ */
+html {
+  font-size: var(--tam-base);
+  font-family: var(--fuente);
+  background: var(--fondo);
+  color: var(--texto);
+  /* Smooth scroll en iOS */
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  /* Espacio para la nav fija + safe area de iOS */
+  padding-bottom: calc(64px + env(safe-area-inset-bottom));
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+ul, ol {
+  list-style: none;
+}
+
+/* Clase utilitaria para accesibilidad */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.oculto {
+  display: none !important;
+}
+
+/* ============================================================
+   3. HEADER
+   ============================================================ */
+.app-header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: var(--primario);
+  color: var(--blanco);
+  padding: var(--esp-s) var(--esp-m);
+  /* Safe area top para el notch */
+  padding-top: calc(var(--esp-s) + env(safe-area-inset-top));
+  box-shadow: 0 2px 6px rgba(0,0,0,0.18);
+}
+
+.app-title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  display: flex;
+  align-items: center;
+  gap: var(--esp-s);
+}
+
+.badge-count {
+  background: rgba(255,255,255,0.25);
+  border-radius: 12px;
+  padding: 2px 8px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.subtitulo {
+  padding: var(--esp-s) var(--esp-m);
+  color: var(--texto-2);
+  font-size: 0.9rem;
+}
+
+/* ============================================================
+   4. MAIN
+   ============================================================ */
+.app-main {
+  flex: 1;
+  padding: var(--esp-s) var(--esp-m) var(--esp-l);
+  max-width: 700px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+/* ============================================================
+   5. NAV INFERIOR
+   ============================================================ */
+.nav-bottom {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 20;
+  display: flex;
+  background: var(--blanco);
+  border-top: 1px solid var(--borde);
+  padding-bottom: env(safe-area-inset-bottom);
+  box-shadow: 0 -2px 8px rgba(0,0,0,0.08);
+}
+
+.nav-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--tacto);
+  padding: 6px 4px;
+  color: var(--texto-2);
+  font-size: 0.72rem;
+  font-weight: 500;
+  transition: color 0.15s, background 0.15s;
+  border-radius: 4px;
+}
+
+.nav-item:active,
+.nav-item:hover {
+  background: var(--fondo);
+  color: var(--primario);
+}
+
+.nav-item--active {
+  color: var(--primario);
+  font-weight: 700;
+}
+
+.nav-item--active .nav-icon {
+  transform: scale(1.15);
+}
+
+.nav-icon {
+  font-size: 1.4rem;
+  line-height: 1;
+  display: block;
+  transition: transform 0.15s;
+}
+
+.nav-label {
+  margin-top: 2px;
+}
+
+/* ============================================================
+   6. CHIPS DE ZONA
+   ============================================================ */
+.zona-chips {
+  display: flex;
+  gap: 6px;
+  padding: var(--esp-s) var(--esp-m);
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  background: var(--primario);
+  /* Ocultar scrollbar */
+  scrollbar-width: none;
+}
+.zona-chips::-webkit-scrollbar { display: none; }
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  height: var(--tacto);
+  padding: 0 14px;
+  border-radius: 22px;
+  border: 2px solid rgba(255,255,255,0.5);
+  color: rgba(255,255,255,0.9);
+  font-size: 0.82rem;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+  text-decoration: none;
+}
+
+.chip--active,
+.chip:active {
+  background: var(--blanco);
+  color: var(--primario);
+  border-color: var(--blanco);
+}
+
+/* ============================================================
+   7. LISTA DE CLIENTES (HOY, AGENDA, CLIENTES)
+   ============================================================ */
+.zona-seccion {
+  margin-bottom: var(--esp-l);
+}
+
+.zona-header {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--texto-2);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: var(--esp-s) 0;
+  border-bottom: 2px solid var(--borde);
+  margin-bottom: var(--esp-s);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.zona-count {
+  background: var(--borde);
+  border-radius: 10px;
+  padding: 1px 7px;
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+.cliente-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.cliente-card {
+  display: flex;
+  align-items: stretch;
+  border-radius: 10px;
+  overflow: hidden;
+  background: var(--blanco);
+  border: 1px solid var(--borde);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  transition: box-shadow 0.15s;
+}
+
+.cliente-card:active {
+  box-shadow: 0 3px 8px rgba(0,0,0,0.12);
+}
+
+/* Franjas de color por estado */
+.semaforo-rojo    { border-left: 5px solid var(--rojo);    background: var(--rojo-bg); }
+.semaforo-verde   { border-left: 5px solid var(--verde);   background: var(--verde-bg); }
+.semaforo-amarillo{ border-left: 5px solid var(--amarillo);background: var(--amarillo-bg); }
+.semaforo-gris    { border-left: 5px solid var(--gris);    background: var(--gris-bg); }
+.semaforo-azul    { border-left: 5px solid var(--azul);    background: var(--azul-bg); }
+
+.cliente-link {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px var(--esp-m);
+  min-height: var(--tacto);
+  gap: var(--esp-s);
+}
+
+.cliente-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.cliente-nombre {
+  font-size: var(--tam-nombre);
+  font-weight: 700;
+  color: var(--texto);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cliente-zona {
+  font-size: var(--tam-zona);
+  color: var(--texto-2);
+}
+
+.cliente-nota {
+  font-size: 0.78rem;
+  color: var(--texto-2);
+  font-style: italic;
+}
+
+/* Badges de días */
+.badge-dias {
+  flex-shrink: 0;
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 4px 9px;
+  border-radius: 12px;
+  white-space: nowrap;
+}
+
+.semaforo-rojo--badge     { background: var(--rojo);    color: var(--blanco); }
+.semaforo-verde--badge    { background: var(--verde);   color: var(--blanco); }
+.semaforo-amarillo--badge { background: var(--amarillo);color: var(--blanco); }
+.semaforo-gris--badge     { background: var(--gris);    color: var(--blanco); }
+.semaforo-azul--badge     { background: var(--azul);    color: var(--blanco); }
+
+/* Botón Registrar dentro de la card */
+.btn-registrar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: var(--tacto);
+  min-height: var(--tacto);
+  padding: 0 12px;
+  background: var(--primario);
+  color: var(--blanco);
+  font-weight: 700;
+  font-size: 0.85rem;
+  white-space: nowrap;
+  transition: background 0.15s;
+  border-left: 1px solid rgba(0,0,0,0.08);
+}
+
+.btn-registrar:active,
+.btn-registrar:hover {
+  background: var(--primario-dark);
+}
+
+/* ============================================================
+   8. FORMULARIOS
+   ============================================================ */
+.campo-grupo {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: var(--esp-m);
+}
+
+.campo-grupo label {
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--texto);
+}
+
+.campo-ayuda {
+  font-weight: 400;
+  font-size: 0.8rem;
+  color: var(--texto-2);
+  display: block;
+}
+
+.input {
+  width: 100%;
+  height: var(--tacto);
+  padding: 0 12px;
+  border: 2px solid var(--borde);
+  border-radius: 8px;
+  font-size: var(--tam-base);
+  font-family: var(--fuente);
+  background: var(--blanco);
+  color: var(--texto);
+  transition: border-color 0.15s;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--primario);
+  box-shadow: 0 0 0 3px rgba(26, 86, 219, 0.18);
+}
+
+.input--textarea {
+  height: auto;
+  min-height: calc(var(--tacto) * 2);
+  padding: 10px 12px;
+  resize: vertical;
+  line-height: 1.5;
+}
+
+.input--numero {
+  max-width: 180px;
+}
+
+.input--buscar {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23999' stroke-width='2'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cline x1='21' y1='21' x2='16.65' y2='16.65'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: 12px center;
+  padding-left: 40px;
+}
+
+/* ============================================================
+   9. BOTONES
+   ============================================================ */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: var(--tacto);
+  padding: 0 var(--esp-m);
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  font-family: var(--fuente);
+  cursor: pointer;
+  border: none;
+  transition: background 0.15s, opacity 0.15s;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.btn:active {
+  opacity: 0.85;
+}
+
+.btn-primario {
+  background: var(--primario);
+  color: var(--blanco);
+}
+
+.btn-primario:hover {
+  background: var(--primario-dark);
+}
+
+.btn-secundario {
+  background: var(--gris-bg);
+  color: var(--texto);
+  border: 2px solid var(--borde);
+}
+
+.btn-peligro {
+  background: var(--rojo);
+  color: var(--blanco);
+  height: var(--tacto);
+  padding: 0 var(--esp-m);
+  border: none;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.btn-wa {
+  background: #25D366;
+  color: var(--blanco);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: var(--tacto);
+  border-radius: 8px;
+  font-weight: 700;
+  margin-bottom: var(--esp-s);
+}
+
+.btn-grande {
+  height: 52px;
+  font-size: 1.05rem;
+}
+
+.btn-registrar-grande {
+  width: 100%;
+  margin-bottom: var(--esp-m);
+}
+
+.btn-fila {
+  display: flex;
+  gap: var(--esp-s);
+  flex-wrap: wrap;
+  margin-top: var(--esp-m);
+}
+
+.btn-volver {
+  display: inline-flex;
+  align-items: center;
+  height: 36px;
+  padding: 0 10px;
+  color: rgba(255,255,255,0.9);
+  font-size: 0.88rem;
+  font-weight: 600;
+  border-radius: 6px;
+  border: 1px solid rgba(255,255,255,0.4);
+  margin-top: 4px;
+}
+
+/* Botones SÍ / NO en formulario visita */
+.btn-grupo-grande {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--esp-s);
+}
+
+.btn-opcion {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 56px;
+  border-radius: 10px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  cursor: pointer;
+  border: 3px solid var(--borde);
+  background: var(--blanco);
+  transition: border-color 0.15s, background 0.15s;
+  user-select: none;
+}
+
+.btn-opcion input[type="radio"] {
+  display: none;
+}
+
+.btn-opcion:has(input:checked) {
+  border-color: var(--primario);
+  background: var(--azul-bg);
+}
+
+/* ============================================================
+   10. ATAJOS DE FRASES (visita_form)
+   ============================================================ */
+.atajos-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: var(--esp-s);
+}
+
+.chip--atajo {
+  height: 36px;
+  padding: 0 12px;
+  border-radius: 18px;
+  border: 2px solid var(--borde);
+  background: var(--blanco);
+  color: var(--texto);
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: var(--fuente);
+  white-space: nowrap;
+  transition: background 0.12s, border-color 0.12s;
+}
+
+.chip--atajo:active,
+.chip--atajo:hover {
+  background: var(--azul-bg);
+  border-color: var(--primario);
+}
+
+/* ============================================================
+   11. BUSCADOR Y FILTROS (clientes)
+   ============================================================ */
+.buscador-wrap {
+  padding: var(--esp-s) var(--esp-m) 4px;
+  background: var(--primario);
+}
+
+.filtros-wrap {
+  display: flex;
+  gap: var(--esp-s);
+  padding: 4px var(--esp-m) var(--esp-s);
+  background: var(--primario);
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.filtros-wrap::-webkit-scrollbar { display: none; }
+
+.select-filtro {
+  height: var(--tacto);
+  padding: 0 10px;
+  border-radius: 8px;
+  border: 2px solid rgba(255,255,255,0.5);
+  background: rgba(255,255,255,0.15);
+  color: var(--blanco);
+  font-size: 0.85rem;
+  font-family: var(--fuente);
+  font-weight: 600;
+  cursor: pointer;
+  flex-shrink: 0;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.select-filtro option {
+  background: var(--blanco);
+  color: var(--texto);
+}
+
+.acciones-top {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: var(--esp-m);
+}
+
+/* ============================================================
+   12. FICHA DE CLIENTE
+   ============================================================ */
+.ficha-estado {
+  border-radius: 10px;
+  padding: var(--esp-m);
+  margin-bottom: var(--esp-m);
+  text-align: center;
+}
+
+.badge-dias-grande {
+  font-size: 1.4rem;
+  font-weight: 700;
+}
+
+.ficha-seccion {
+  background: var(--blanco);
+  border-radius: 10px;
+  border: 1px solid var(--borde);
+  padding: var(--esp-m);
+  margin-bottom: var(--esp-m);
+}
+
+.ficha-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--esp-s);
+  margin-bottom: var(--esp-m);
+}
+
+.stat-card {
+  background: var(--blanco);
+  border: 1px solid var(--borde);
+  border-radius: 10px;
+  padding: var(--esp-s);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.stat-card--alerta {
+  border-color: var(--rojo);
+  background: var(--rojo-bg);
+}
+
+.stat-valor {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--texto);
+}
+
+.stat-label {
+  font-size: 0.72rem;
+  color: var(--texto-2);
+}
+
+/* ============================================================
+   13. HISTORIAL DE VISITAS
+   ============================================================ */
+.historial-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: var(--esp-s);
+}
+
+.historial-item {
+  background: var(--blanco);
+  border: 1px solid var(--borde);
+  border-radius: 8px;
+  padding: var(--esp-s) var(--esp-m);
+  display: flex;
+  gap: var(--esp-m);
+  align-items: flex-start;
+}
+
+.historial-item--compro {
+  border-left: 4px solid var(--verde);
+  background: var(--verde-bg);
+}
+
+.historial-fecha {
+  font-weight: 700;
+  font-size: 0.88rem;
+  color: var(--texto-2);
+  white-space: nowrap;
+  min-width: 80px;
+}
+
+.historial-detalle {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  font-size: 0.88rem;
+}
+
+.tag-compro   { color: var(--verde); font-weight: 700; }
+.tag-no-compro{ color: var(--rojo);  font-weight: 700; }
+.historial-monto { font-weight: 700; color: var(--texto); }
+.historial-saldo { color: var(--rojo); font-weight: 600; }
+.historial-obs   { color: var(--texto-2); font-style: italic; }
+.historial-pago  { color: var(--texto-2); font-size: 0.82rem; }
+.historial-art   { color: var(--texto); }
+
+/* ============================================================
+   14. RESUMEN
+   ============================================================ */
+.mes-selector {
+  margin-bottom: var(--esp-m);
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--esp-s);
+  margin-bottom: var(--esp-l);
+}
+
+.stat-card-grande {
+  background: var(--blanco);
+  border: 1px solid var(--borde);
+  border-radius: 12px;
+  padding: var(--esp-m);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.stat-card--destacado { border-color: var(--amarillo); background: var(--amarillo-bg); }
+.stat-card--verde     { border-color: var(--verde);    background: var(--verde-bg); }
+
+.stat-numero {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--texto);
+}
+
+.stat-etiqueta {
+  font-size: 0.78rem;
+  color: var(--texto-2);
+  text-align: center;
+}
+
+.saldos-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: var(--esp-l);
+}
+
+.saldo-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--esp-s) var(--esp-m);
+  background: var(--rojo-bg);
+  border: 1px solid var(--rojo);
+  border-radius: 8px;
+  min-height: var(--tacto);
+}
+
+.saldo-nombre {
+  font-weight: 600;
+  font-size: 0.95rem;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.saldo-monto {
+  font-weight: 700;
+  color: var(--rojo);
+  white-space: nowrap;
+  margin-left: var(--esp-s);
+}
+
+.zonas-ranking {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: var(--esp-l);
+}
+
+.zona-ranking-item {
+  display: flex;
+  align-items: center;
+  gap: var(--esp-s);
+  padding: var(--esp-s) var(--esp-m);
+  background: var(--blanco);
+  border: 1px solid var(--borde);
+  border-radius: 8px;
+  min-height: var(--tacto);
+}
+
+.zona-pos {
+  font-weight: 700;
+  color: var(--texto-2);
+  min-width: 24px;
+  text-align: center;
+}
+
+.zona-nombre-rank {
+  flex: 1;
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.zona-monto {
+  font-weight: 700;
+  color: var(--verde);
+}
+
+.exportar-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: var(--esp-s);
+  margin-top: var(--esp-l);
+}
+
+/* ============================================================
+   15. AVISOS / ESTADO VACÍO
+   ============================================================ */
+.aviso-ok {
+  background: var(--verde-bg);
+  border: 2px solid var(--verde);
+  color: var(--verde);
+  border-radius: 8px;
+  padding: var(--esp-s) var(--esp-m);
+  margin-bottom: var(--esp-m);
+  font-weight: 600;
+}
+
+.aviso-error {
+  background: var(--rojo-bg);
+  border: 2px solid var(--rojo);
+  color: var(--rojo);
+  border-radius: 8px;
+  padding: var(--esp-s) var(--esp-m);
+  margin-bottom: var(--esp-m);
+  font-weight: 600;
+}
+
+.estado-vacio {
+  padding: var(--esp-l) 0;
+  text-align: center;
+  color: var(--texto-2);
+  font-size: 1rem;
+}
+
+/* ============================================================
+   16. LOGIN
+   ============================================================ */
+.body-login {
+  background: var(--primario);
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--esp-m);
+  padding-bottom: 0; /* anular el padding-bottom del body normal */
+}
+
+.login-wrap {
+  width: 100%;
+  max-width: 360px;
+}
+
+.login-card {
+  background: var(--blanco);
+  border-radius: 16px;
+  padding: var(--esp-l);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+  display: flex;
+  flex-direction: column;
+  gap: var(--esp-m);
+}
+
+.login-titulo {
+  font-size: 1.8rem;
+  text-align: center;
+  color: var(--primario);
+}
+
+.login-subtitulo {
+  text-align: center;
+  color: var(--texto-2);
+  font-size: 0.9rem;
+}
+
+.input--login {
+  text-align: center;
+  font-size: 1.3rem;
+  letter-spacing: 0.3em;
+}
+
+.btn-login {
+  width: 100%;
+  height: 52px;
+  font-size: 1.05rem;
+}
+
+/* ============================================================
+   17. CLIENTE SELECCIONADO (visita form)
+   ============================================================ */
+.cliente-seleccionado {
+  background: var(--azul-bg);
+  border: 2px solid var(--azul);
+  border-radius: 10px;
+  padding: var(--esp-m);
+  margin-bottom: var(--esp-m);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+/* ============================================================
+   18. DETALLES PELIGRO (baja)
+   ============================================================ */
+.detalle-peligro {
+  margin-top: var(--esp-l);
+  border: 2px dashed var(--borde);
+  border-radius: 8px;
+  padding: var(--esp-s) var(--esp-m);
+}
+
+.detalle-peligro summary {
+  cursor: pointer;
+  color: var(--texto-2);
+  font-size: 0.9rem;
+  padding: var(--esp-s) 0;
+  min-height: var(--tacto);
+  display: flex;
+  align-items: center;
+}
+
+/* ============================================================
+   19. RESPONSIVE — pantallas más grandes (tablet / desktop)
+   ============================================================ */
+@media (min-width: 600px) {
+  .app-header {
+    padding: var(--esp-m) var(--esp-l);
+  }
+
+  .app-main {
+    padding: var(--esp-m) var(--esp-l) var(--esp-l);
+  }
+
+  .stats-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .ficha-stats {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .btn-grupo-grande {
+    max-width: 360px;
+  }
+}

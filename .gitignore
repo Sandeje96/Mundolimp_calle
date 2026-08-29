@@ -1,0 +1,45 @@
+# Variables de entorno — NUNCA subir a git
+.env
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+dist/
+build/
+.eggs/
+*.egg
+
+# Entornos virtuales
+venv/
+.venv/
+env/
+ENV/
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Logs
+*.log
+*.pid
+
+# Cobertura de tests
+.coverage
+htmlcov/
+.pytest_cache/
+
+# Archivos temporales
+*.tmp
+*.bak

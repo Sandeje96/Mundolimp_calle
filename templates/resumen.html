@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% block title %}Resumen {{ mes }} — MUNDOLIMP{% endblock %}
+{% block page_title %}RESUMEN{% endblock %}
+
+{% block content %}
+
+<!-- Selector de mes -->
+<div class="mes-selector">
+  <form method="get" action="/resumen" id="form-mes">
+    <label for="mes" class="sr-only">Mes</label>
+    <input type="month" id="mes" name="mes" value="{{ mes }}"
+           class="input" onchange="this.form.submit()" aria-label="Seleccionar mes">
+  </form>
+</div>
+
+<!-- Estadísticas principales -->
+<section class="stats-grid" aria-label="Estadísticas del mes">
+  <div class="stat-card-grande">
+    <span class="stat-numero">{{ stats.total_visitados }}</span>
+    <span class="stat-etiqueta">Clientes visitados</span>
+  </div>
+  <div class="stat-card-grande">
+    <span class="stat-numero">{{ stats.total_compraron }}</span>
+    <span class="stat-etiqueta">Compraron</span>
+  </div>
+  <div class="stat-card-grande stat-card--destacado">
+    <span class="stat-numero">{{ stats.conversion }}%</span>
+    <span class="stat-etiqueta">Conversión</span>
+  </div>
+  <div class="stat-card-grande stat-card--verde">
+    <span class="stat-numero">{{ stats.total_vendido | pesos }}</span>
+    <span class="stat-etiqueta">Total vendido</span>
+  </div>
+</section>
+
+<!-- Saldos pendientes -->
+{% if saldos %}
+<section aria-label="Saldos pendientes">
+  <h2 class="zona-header">💰 Saldos pendientes</h2>
+  <ul class="saldos-lista" role="list">
+    {% for s in saldos %}
+    <li class="saldo-item">
+      <a href="/clientes/{{ s.id }}" class="saldo-nombre" id="saldo-{{ s.id }}">{{ s.nombre }}</a>
+      <span class="saldo-monto">{{ s.total | pesos }}</span>
+    </li>
+    {% endfor %}
+  </ul>
+</section>
+{% endif %}
+
+<!-- Ranking de zonas -->
+{% if zonas_ranking %}
+<section aria-label="Ranking de zonas">
+  <h2 class="zona-header">🏆 Zonas por venta</h2>
+  <ol class="zonas-ranking" role="list">
+    {% for zona_nombre, monto in zonas_ranking %}
+    <li class="zona-ranking-item">
+      <span class="zona-pos">{{ loop.index }}</span>
+      <span class="zona-nombre-rank">{{ zona_nombre or 'Sin zona' }}</span>
+      <span class="zona-monto">{{ monto | pesos }}</span>
+    </li>
+    {% endfor %}
+  </ol>
+</section>
+{% endif %}
+
+<!-- Backup -->
+<div class="exportar-wrap">
+  <a href="/exportar.csv" class="btn btn-secundario" id="btn-exportar">
+    ⬇️ Descargar backup CSV
+  </a>
+</div>
+
+{% endblock %}

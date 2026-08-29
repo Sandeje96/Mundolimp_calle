@@ -1,0 +1,137 @@
+{% extends "base.html" %}
+{% block title %}Registrar visita — MUNDOLIMP{% endblock %}
+{% block page_title %}Registrar visita{% endblock %}
+
+{% block header_extra %}
+<a href="/" class="btn-volver" aria-label="Volver a Hoy">← Hoy</a>
+{% endblock %}
+
+{% block content %}
+
+<form method="post" action="/visitas" id="form-visita">
+
+  <!-- Cliente -->
+  {% if cliente %}
+    <input type="hidden" name="cliente_id" value="{{ cliente.id }}">
+    <div class="cliente-seleccionado">
+      <span class="cliente-nombre">{{ cliente.nombre }}</span>
+      <span class="cliente-zona">{{ cliente.zona }}</span>
+    </div>
+  {% else %}
+    <div class="campo-grupo">
+      <label for="cliente_id">Cliente *</label>
+      <select id="cliente_id" name="cliente_id" class="input" required aria-label="Seleccionar cliente">
+        <option value="">— Seleccioná un cliente —</option>
+        {% for c in clientes %}
+          <option value="{{ c.id }}">{{ c.nombre }} — {{ c.zona }}</option>
+        {% endfor %}
+      </select>
+    </div>
+  {% endif %}
+
+  <!-- Fecha -->
+  <div class="campo-grupo">
+    <label for="fecha">Fecha</label>
+    <input type="date" id="fecha" name="fecha"
+           value="{{ hoy.isoformat() }}" class="input" required>
+  </div>
+
+  <!-- ¿Compró? — botones grandes -->
+  <div class="campo-grupo">
+    <label>¿Compró?</label>
+    <div class="btn-grupo-grande" role="group" aria-label="¿Compró?">
+      <label class="btn-opcion" id="label-si">
+        <input type="radio" name="compro" value="si" id="compro-si">
+        ✅ SÍ
+      </label>
+      <label class="btn-opcion" id="label-no">
+        <input type="radio" name="compro" value="no" id="compro-no" checked>
+        ❌ NO
+      </label>
+    </div>
+  </div>
+
+  <!-- Campos que solo se muestran si compró -->
+  <div id="campos-compra" class="oculto">
+    <div class="campo-grupo">
+      <label for="articulos">Artículos</label>
+      <input type="text" id="articulos" name="articulos" class="input"
+             placeholder="Ej: A4 Meka x20, Lavandina 1L x6…" autocomplete="off">
+    </div>
+
+    <div class="campo-grupo">
+      <label for="forma_pago">Forma de pago</label>
+      <select id="forma_pago" name="forma_pago" class="input">
+        {% for fp in formas_pago %}
+          <option value="{{ fp }}">{{ fp }}</option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <div class="campo-grupo">
+      <label for="monto">Monto ($)</label>
+      <input type="number" id="monto" name="monto" value="0"
+             min="0" step="0.01" inputmode="numeric" class="input input--numero"
+             placeholder="0">
+    </div>
+
+    <div class="campo-grupo">
+      <label for="saldo_pendiente">Saldo pendiente ($)</label>
+      <input type="number" id="saldo_pendiente" name="saldo_pendiente" value="0"
+             min="0" step="0.01" inputmode="numeric" class="input input--numero"
+             placeholder="0">
+    </div>
+  </div>
+
+  <!-- Observaciones con atajos -->
+  <div class="campo-grupo">
+    <label for="observaciones">Observaciones</label>
+    <textarea id="observaciones" name="observaciones" class="input input--textarea"
+              placeholder="Opcional…" rows="3"></textarea>
+
+    <div class="atajos-wrap" aria-label="Frases rápidas">
+      {% for atajo in atajos %}
+      <button type="button"
+              class="chip chip--atajo"
+              id="atajo-{{ loop.index }}"
+              onclick="agregarAtajo('{{ atajo }}')">{{ atajo }}</button>
+      {% endfor %}
+    </div>
+  </div>
+
+  <div class="btn-fila">
+    <button type="submit" class="btn btn-primario btn-grande" id="btn-guardar-visita">
+      ✓ Guardar visita
+    </button>
+    <a href="/" class="btn btn-secundario">Cancelar</a>
+  </div>
+</form>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+  // Mostrar/ocultar campos de compra según la selección
+  const radios = document.querySelectorAll('input[name="compro"]');
+  const camposCompra = document.getElementById('campos-compra');
+
+  function actualizarCampos() {
+    const compro = document.querySelector('input[name="compro"]:checked').value;
+    camposCompra.classList.toggle('oculto', compro !== 'si');
+  }
+
+  radios.forEach(r => r.addEventListener('change', actualizarCampos));
+  actualizarCampos(); // estado inicial
+
+  // Botones de atajo de observaciones
+  function agregarAtajo(texto) {
+    const obs = document.getElementById('observaciones');
+    if (obs.value) {
+      obs.value += ' · ' + texto;
+    } else {
+      obs.value = texto;
+    }
+    obs.focus();
+  }
+</script>
+{% endblock %}

@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %}Agenda — MUNDOLIMP{% endblock %}
+{% block page_title %}AGENDA{% endblock %}
+
+{% block content %}
+
+<p class="subtitulo">Próximos 15 días · {{ hoy.strftime('%d/%m/%Y') }}</p>
+
+{% if not dias_ordenados %}
+  <div class="estado-vacio">
+    <p>📭 No hay visitas programadas para los próximos 15 días.</p>
+  </div>
+{% endif %}
+
+{% for dia_str in dias_ordenados %}
+  {% set clientes = agenda_dict[dia_str] %}
+  {% set fecha = hoy.__class__.fromisoformat(dia_str) %}
+  <section class="zona-seccion" aria-labelledby="dia-{{ loop.index }}">
+    <h2 class="zona-header" id="dia-{{ loop.index }}">
+      📅
+      {% if dia_str == hoy.isoformat() %}
+        HOY — {{ fecha.strftime('%A %d/%m') }}
+      {% elif (fecha - hoy).days == 1 %}
+        MAÑANA — {{ fecha.strftime('%A %d/%m') }}
+      {% else %}
+        {{ fecha.strftime('%A %d/%m') }}
+      {% endif %}
+      <span class="zona-count">{{ clientes | length }}</span>
+    </h2>
+
+    <ul class="cliente-lista" role="list">
+      {% for c in clientes %}
+      <li class="cliente-card {{ c.css_clase }}" id="agenda-{{ c.id }}">
+        <a href="/clientes/{{ c.id }}" class="cliente-link" aria-label="Ver ficha de {{ c.nombre }}">
+          <div class="cliente-info">
+            <span class="cliente-nombre">{{ c.nombre }}</span>
+            <span class="cliente-zona">{{ c.zona }}</span>
+            {% if c.nota_fija %}
+              <span class="cliente-nota">📌 {{ c.nota_fija }}</span>
+            {% endif %}
+          </div>
+          <span class="badge-dias {{ c.css_clase }}--badge">{{ c.badge }}</span>
+        </a>
+        <a href="/visitas/nueva?cliente_id={{ c.id }}"
+           class="btn-registrar"
+           id="agenda-reg-{{ c.id }}"
+           aria-label="Registrar visita a {{ c.nombre }}">
+          ✓ Registrar
+        </a>
+      </li>
+      {% endfor %}
+    </ul>
+  </section>
+{% endfor %}
+
+{% endblock %}

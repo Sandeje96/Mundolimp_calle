@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block title %}Ajustes — MUNDOLIMP{% endblock %}
+{% block page_title %}AJUSTES{% endblock %}
+
+{% block content %}
+
+{% if guardado %}
+<div class="aviso-ok" role="alert" id="aviso-guardado">✅ Ajustes guardados.</div>
+{% endif %}
+
+<form method="post" action="/ajustes" id="form-ajustes">
+  <div class="campo-grupo">
+    <label for="dias_aviso">
+      Días de aviso previo
+      <span class="campo-ayuda">Cuántos días antes de vencer aparece como "Próximo" (default: 2)</span>
+    </label>
+    <input type="number" id="dias_aviso" name="dias_aviso"
+           value="{{ dias_aviso }}" min="0" max="30"
+           inputmode="numeric" class="input input--numero" required>
+  </div>
+
+  <div class="campo-grupo">
+    <label for="frecuencia_default">
+      Frecuencia por defecto (días)
+      <span class="campo-ayuda">Frecuencia que se asigna a los clientes nuevos (default: 10)</span>
+    </label>
+    <input type="number" id="frecuencia_default" name="frecuencia_default"
+           value="{{ frecuencia_default }}" min="1" max="365"
+           inputmode="numeric" class="input input--numero" required>
+  </div>
+
+  <div class="btn-fila">
+    <button type="submit" class="btn btn-primario" id="btn-guardar-ajustes">💾 Guardar</button>
+  </div>
+</form>
+
+<div class="exportar-wrap">
+  <a href="/exportar.csv" class="btn btn-secundario" id="btn-exportar-ajustes">⬇️ Descargar backup CSV</a>
+  <a href="/logout" class="btn btn-secundario" id="btn-logout">🔒 Cerrar sesión</a>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+  const aviso = document.getElementById('aviso-guardado');
+  if (aviso) setTimeout(() => aviso.remove(), 3000);
+</script>
+{% endblock %}

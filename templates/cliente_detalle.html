@@ -1,0 +1,143 @@
+{% extends "base.html" %}
+{% block title %}{{ cliente.nombre }} — MUNDOLIMP{% endblock %}
+{% block page_title %}Ficha{% endblock %}
+
+{% block header_extra %}
+<a href="/clientes" class="btn-volver" aria-label="Volver a clientes">← Clientes</a>
+{% endblock %}
+
+{% block content %}
+
+<!-- Badge de estado -->
+<div class="ficha-estado {{ css_clase }}" role="status">
+  <span class="badge-dias-grande">{{ badge }}</span>
+</div>
+
+<!-- Datos del cliente -->
+<section class="ficha-seccion" aria-label="Datos del cliente">
+  <form method="post" action="/clientes/{{ cliente.id }}" id="form-editar-cliente">
+    <div class="campo-grupo">
+      <label for="nombre">Nombre</label>
+      <input type="text" id="nombre" name="nombre" value="{{ cliente.nombre }}"
+             required class="input" autocomplete="off">
+    </div>
+
+    <div class="campo-grupo">
+      <label for="zona">Zona</label>
+      <input type="text" id="zona" name="zona" value="{{ cliente.zona }}"
+             list="zonas-lista" class="input" autocomplete="off">
+      <datalist id="zonas-lista">
+        {% for z in zonas %}
+          <option value="{{ z }}">
+        {% endfor %}
+      </datalist>
+    </div>
+
+    <div class="campo-grupo">
+      <label for="frecuencia_dias">Frecuencia de visita (días)</label>
+      <input type="number" id="frecuencia_dias" name="frecuencia_dias"
+             value="{{ cliente.frecuencia_dias }}" min="1" max="365"
+             inputmode="numeric" class="input input--numero" required>
+    </div>
+
+    <div class="campo-grupo">
+      <label for="contacto">Encargado / Contacto</label>
+      <input type="text" id="contacto" name="contacto" value="{{ cliente.contacto }}" class="input">
+    </div>
+
+    <div class="campo-grupo">
+      <label for="telefono">Teléfono</label>
+      <input type="tel" id="telefono" name="telefono" value="{{ cliente.telefono }}"
+             inputmode="tel" class="input">
+    </div>
+
+    <div class="campo-grupo">
+      <label for="direccion">Dirección</label>
+      <input type="text" id="direccion" name="direccion" value="{{ cliente.direccion }}" class="input">
+    </div>
+
+    <div class="campo-grupo">
+      <label for="nota_fija">Nota fija</label>
+      <textarea id="nota_fija" name="nota_fija" class="input input--textarea"
+                placeholder="Ej: Visitar por la mañana, hablar con Horacio…">{{ cliente.nota_fija }}</textarea>
+    </div>
+
+    <div class="btn-fila">
+      <button type="submit" class="btn btn-primario" id="btn-guardar-cliente">💾 Guardar cambios</button>
+    </div>
+  </form>
+</section>
+
+<!-- Botón WhatsApp si hay teléfono -->
+{% if cliente.telefono %}
+<a href="https://wa.me/549{{ cliente.telefono | replace(' ', '') | replace('-', '') | replace('+', '') | replace('549', '') }}"
+   target="_blank" rel="noopener"
+   class="btn btn-wa" id="btn-whatsapp">
+  📱 WhatsApp
+</a>
+{% endif %}
+
+<!-- Acción rápida -->
+<a href="/visitas/nueva?cliente_id={{ cliente.id }}"
+   class="btn btn-primario btn-registrar-grande" id="btn-registrar-visita">
+  ✓ Registrar visita
+</a>
+
+<!-- Estadísticas -->
+<section class="ficha-stats" aria-label="Estadísticas del cliente">
+  <div class="stat-card">
+    <span class="stat-valor">{{ total_comprado | pesos }}</span>
+    <span class="stat-label">Total comprado</span>
+  </div>
+  <div class="stat-card {% if saldo_pendiente > 0 %}stat-card--alerta{% endif %}">
+    <span class="stat-valor">{{ saldo_pendiente | pesos }}</span>
+    <span class="stat-label">Saldo pendiente</span>
+  </div>
+  <div class="stat-card">
+    <span class="stat-valor">{{ visitas | length }}</span>
+    <span class="stat-label">Visitas registradas</span>
+  </div>
+</section>
+
+<!-- Historial de visitas -->
+<section aria-label="Historial de visitas">
+  <h2 class="zona-header">Historial</h2>
+  {% if visitas %}
+  <ul class="historial-lista" role="list">
+    {% for v in visitas %}
+    <li class="historial-item {% if v.compro %}historial-item--compro{% endif %}">
+      <div class="historial-fecha">{{ v.fecha.strftime('%d/%m/%Y') }}</div>
+      <div class="historial-detalle">
+        {% if v.compro %}
+          <span class="tag-compro">✅ Compró</span>
+          {% if v.articulos %}<span class="historial-art">{{ v.articulos }}</span>{% endif %}
+          <span class="historial-monto">{{ v.monto | pesos }}</span>
+          {% if v.saldo_pendiente > 0 %}
+            <span class="historial-saldo">Saldo: {{ v.saldo_pendiente | pesos }}</span>
+          {% endif %}
+          {% if v.forma_pago %}<span class="historial-pago">{{ v.forma_pago }}</span>{% endif %}
+        {% else %}
+          <span class="tag-no-compro">❌ No compró</span>
+        {% endif %}
+        {% if v.observaciones %}
+          <span class="historial-obs">{{ v.observaciones }}</span>
+        {% endif %}
+      </div>
+    </li>
+    {% endfor %}
+  </ul>
+  {% else %}
+    <p class="estado-vacio">Sin visitas registradas.</p>
+  {% endif %}
+</section>
+
+<!-- Baja lógica -->
+<details class="detalle-peligro">
+  <summary>Opciones avanzadas</summary>
+  <form method="post" action="/clientes/{{ cliente.id }}/baja"
+        onsubmit="return confirm('¿Dar de baja a {{ cliente.nombre }}?')">
+    <button type="submit" class="btn btn-peligro" id="btn-baja">Dar de baja al cliente</button>
+  </form>
+</details>
+
+{% endblock %}

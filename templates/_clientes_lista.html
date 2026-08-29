@@ -1,0 +1,25 @@
+{% if clientes %}
+<ul class="cliente-lista" role="list">
+  {% for c in clientes %}
+  <li class="cliente-card {{ c.css_clase }}" id="cli-{{ c.id }}">
+    <a href="/clientes/{{ c.id }}" class="cliente-link" aria-label="Ver ficha de {{ c.nombre }}">
+      <div class="cliente-info">
+        <span class="cliente-nombre">{{ c.nombre }}</span>
+        <span class="cliente-zona">{{ c.zona }}</span>
+      </div>
+      <span class="badge-dias {{ c.css_clase }}--badge">{{ c.badge }}</span>
+    </a>
+    <a href="/visitas/nueva?cliente_id={{ c.id }}"
+       class="btn-registrar"
+       id="cli-reg-{{ c.id }}"
+       aria-label="Registrar visita a {{ c.nombre }}">
+      ✓
+    </a>
+  </li>
+  {% endfor %}
+</ul>
+{% else %}
+<div class="estado-vacio">
+  <p>No se encontraron clientes con esos filtros.</p>
+</div>
+{% endif %}

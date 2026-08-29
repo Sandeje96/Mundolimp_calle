@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% block title %}HOY — MUNDOLIMP{% endblock %}
+{% block page_title %}
+  HOY
+  <span class="badge-count">{{ total }}</span>
+{% endblock %}
+
+{% block header_extra %}
+<div class="zona-chips" role="group" aria-label="Filtrar por zona">
+  <a href="/" class="chip {% if not zona_activa %}chip--active{% endif %}" id="chip-todas">Todas</a>
+  {% for z in todas_zonas %}
+    <a href="/?zona={{ z | urlencode }}"
+       class="chip {% if zona_activa == z %}chip--active{% endif %}"
+       id="chip-{{ loop.index }}">{{ z }}</a>
+  {% endfor %}
+</div>
+{% endblock %}
+
+{% block content %}
+
+{# Mensaje de confirmación al volver de registrar visita #}
+{% if request.query_params.get('ok') %}
+<div class="aviso-ok" role="alert" id="aviso-ok">
+  ✅ Visita registrada correctamente.
+</div>
+{% endif %}
+
+{% if not zonas_dict %}
+  <div class="estado-vacio">
+    <p>🎉 ¡Todo al día! No hay clientes que visitar hoy.</p>
+  </div>
+{% endif %}
+
+{% for zona_nombre, clientes in zonas_dict.items() %}
+<section class="zona-seccion" aria-labelledby="zona-{{ loop.index }}">
+  <h2 class="zona-header" id="zona-{{ loop.index }}">
+    📍 {{ zona_nombre }}
+    <span class="zona-count">{{ clientes | length }}</span>
+  </h2>
+
+  <ul class="cliente-lista" role="list">
+    {% for c in clientes %}
+    <li class="cliente-card {{ c.css_clase }}" id="cliente-{{ c.id }}">
+      <a href="/clientes/{{ c.id }}" class="cliente-link" aria-label="Ver ficha de {{ c.nombre }}">
+        <div class="cliente-info">
+          <span class="cliente-nombre">{{ c.nombre }}</span>
+          <span class="cliente-zona">{{ c.zona }}</span>
+          {% if c.nota_fija %}
+            <span class="cliente-nota">📌 {{ c.nota_fija }}</span>
+          {% endif %}
+        </div>
+        <span class="badge-dias {{ c.css_clase }}--badge">{{ c.badge }}</span>
+      </a>
+
+      <a href="/visitas/nueva?cliente_id={{ c.id }}"
+         class="btn-registrar"
+         id="registrar-{{ c.id }}"
+         aria-label="Registrar visita a {{ c.nombre }}">
+        ✓ Registrar
+      </a>
+    </li>
+    {% endfor %}
+  </ul>
+</section>
+{% endfor %}
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+  // Ocultar aviso de confirmación después de 4 segundos
+  const aviso = document.getElementById('aviso-ok');
+  if (aviso) setTimeout(() => aviso.remove(), 4000);
+</script>
+{% endblock %}

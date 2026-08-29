@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% block title %}
+  {% if cliente %}{{ cliente.nombre }}{% else %}Nuevo cliente{% endif %} — MUNDOLIMP
+{% endblock %}
+{% block page_title %}
+  {% if cliente %}Editar cliente{% else %}Nuevo cliente{% endif %}
+{% endblock %}
+
+{% block header_extra %}
+<a href="/clientes" class="btn-volver" aria-label="Volver a clientes">← Clientes</a>
+{% endblock %}
+
+{% block content %}
+
+{% if error %}
+<div class="aviso-error" role="alert">⚠️ {{ error }}</div>
+{% endif %}
+
+<form method="post"
+      action="{% if cliente %}/clientes/{{ cliente.id }}{% else %}/clientes{% endif %}"
+      id="form-cliente">
+
+  <div class="campo-grupo">
+    <label for="nombre">Nombre del negocio *</label>
+    <input type="text" id="nombre" name="nombre"
+           value="{{ (cliente.nombre if cliente else '') }}"
+           required class="input" autocomplete="off"
+           placeholder="Ej: LUBRICENTRO MIGUEL">
+  </div>
+
+  <div class="campo-grupo">
+    <label for="zona">Zona</label>
+    <input type="text" id="zona" name="zona"
+           value="{{ (cliente.zona if cliente else '') }}"
+           list="zonas-lista" class="input" autocomplete="off"
+           placeholder="Ej: Quaranta">
+    <datalist id="zonas-lista">
+      {% for z in zonas %}
+        <option value="{{ z }}">
+      {% endfor %}
+    </datalist>
+  </div>
+
+  <div class="campo-grupo">
+    <label for="frecuencia_dias">Frecuencia de visita (días)</label>
+    <input type="number" id="frecuencia_dias" name="frecuencia_dias"
+           value="{{ (cliente.frecuencia_dias if cliente else freq_default) }}"
+           min="1" max="365" inputmode="numeric" class="input input--numero" required>
+  </div>
+
+  <div class="campo-grupo">
+    <label for="contacto">Encargado / Contacto</label>
+    <input type="text" id="contacto" name="contacto"
+           value="{{ (cliente.contacto if cliente else '') }}" class="input">
+  </div>
+
+  <div class="campo-grupo">
+    <label for="telefono">Teléfono</label>
+    <input type="tel" id="telefono" name="telefono"
+           value="{{ (cliente.telefono if cliente else '') }}"
+           inputmode="tel" class="input" placeholder="Ej: 3764123456">
+  </div>
+
+  <div class="campo-grupo">
+    <label for="direccion">Dirección</label>
+    <input type="text" id="direccion" name="direccion"
+           value="{{ (cliente.direccion if cliente else '') }}" class="input">
+  </div>
+
+  <div class="campo-grupo">
+    <label for="nota_fija">Nota fija</label>
+    <textarea id="nota_fija" name="nota_fija" class="input input--textarea"
+              placeholder="Ej: Visitar por la mañana, hablar con Horacio…">{{ (cliente.nota_fija if cliente else '') }}</textarea>
+  </div>
+
+  <div class="btn-fila">
+    <button type="submit" class="btn btn-primario" id="btn-guardar">
+      {% if cliente %}💾 Guardar cambios{% else %}➕ Crear cliente{% endif %}
+    </button>
+    <a href="/clientes" class="btn btn-secundario">Cancelar</a>
+  </div>
+</form>
+
+{% endblock %}

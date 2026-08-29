@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block title %}Clientes — MUNDOLIMP{% endblock %}
+{% block page_title %}
+  CLIENTES
+  <span class="badge-count">{{ total }}</span>
+{% endblock %}
+
+{% block header_extra %}
+<div class="buscador-wrap">
+  <input
+    type="search"
+    id="q"
+    name="q"
+    value="{{ q }}"
+    placeholder="Buscar cliente…"
+    class="input-buscar"
+    hx-get="/clientes"
+    hx-trigger="input changed delay:300ms, search"
+    hx-target="#lista-clientes"
+    hx-include="#q,#zona-sel,#estado-sel"
+    autocomplete="off"
+    aria-label="Buscar cliente por nombre"
+  >
+</div>
+<div class="filtros-wrap">
+  <select id="zona-sel" name="zona" class="select-filtro"
+    hx-get="/clientes"
+    hx-trigger="change"
+    hx-target="#lista-clientes"
+    hx-include="#q,#zona-sel,#estado-sel"
+    aria-label="Filtrar por zona">
+    <option value="">Todas las zonas</option>
+    {% for z in zonas %}
+      <option value="{{ z }}" {% if zona_activa == z %}selected{% endif %}>{{ z }}</option>
+    {% endfor %}
+  </select>
+  <select id="estado-sel" name="estado" class="select-filtro"
+    hx-get="/clientes"
+    hx-trigger="change"
+    hx-target="#lista-clientes"
+    hx-include="#q,#zona-sel,#estado-sel"
+    aria-label="Filtrar por estado">
+    <option value="">Todos los estados</option>
+    <option value="ATRASADO"   {% if estado_activo == 'ATRASADO'   %}selected{% endif %}>🔴 Atrasado</option>
+    <option value="HOY"        {% if estado_activo == 'HOY'        %}selected{% endif %}>🟢 Hoy</option>
+    <option value="PROXIMO"    {% if estado_activo == 'PROXIMO'    %}selected{% endif %}>🟡 Próximo</option>
+    <option value="AL_DIA"     {% if estado_activo == 'AL_DIA'     %}selected{% endif %}>⚪ Al día</option>
+    <option value="SIN_VISITAR"{% if estado_activo == 'SIN_VISITAR'%}selected{% endif %}>🔵 Sin visitar</option>
+  </select>
+</div>
+{% endblock %}
+
+{% block content %}
+
+<div class="acciones-top">
+  <a href="/clientes/nuevo" class="btn btn-primario" id="btn-nuevo-cliente">+ Nuevo cliente</a>
+</div>
+
+<div id="lista-clientes">
+  {% include "_clientes_lista.html" %}
+</div>
+
+{% endblock %}
