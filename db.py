@@ -21,7 +21,13 @@ POOL: ConnectionPool | None = None
 
 def _make_pool() -> ConnectionPool:
     """Crea el pool usando DATABASE_URL del entorno. Nunca hardcodear la cadena."""
-    db_url = os.environ["DATABASE_URL"]
+    db_url = os.environ.get("DATABASE_URL")
+    if not db_url:
+        raise RuntimeError(
+            "La variable de entorno DATABASE_URL no está definida.\n"
+            "En Railway: Variables → agregar DATABASE_URL = ${{Postgres.DATABASE_URL}}\n"
+            "En local: copiá .env.example a .env y completá los valores."
+        )
     return ConnectionPool(
         conninfo=db_url,
         min_size=1,
