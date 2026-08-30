@@ -1,0 +1,138 @@
+{% extends "base.html" %}
+{% block title %}Cierre del día — MUNDOLIMP{% endblock %}
+{% block page_title %}
+  CIERRE
+  <span class="badge-count">{{ hoy.strftime('%d/%m') }}</span>
+{% endblock %}
+
+{% block content %}
+
+<!-- Totales del día -->
+<div class="cierre-totales">
+  <div class="cierre-total-card cierre-total-card--pendiente">
+    <span class="cierre-total-monto">{{ total_pendiente | pesos }}</span>
+    <span class="cierre-total-label">Por facturar ({{ pendientes | length }})</span>
+  </div>
+  <div class="cierre-total-card cierre-total-card--ok">
+    <span class="cierre-total-monto">{{ total_facturado | pesos }}</span>
+    <span class="cierre-total-label">Ya facturado ({{ facturadas | length }})</span>
+  </div>
+</div>
+
+<!-- ============================================================
+     VENTAS PENDIENTES DE FACTURAR
+     ============================================================ -->
+{% if pendientes %}
+<section aria-label="Ventas por facturar">
+  <h2 class="zona-header">🧾 Por facturar</h2>
+
+  <ul class="cierre-lista" id="lista-pendientes" role="list">
+    {% for v in pendientes %}
+    <li class="cierre-item cierre-item--pendiente" id="visita-{{ v.id }}">
+      <div class="cierre-cliente">
+        <a href="/clientes/{{ v.cliente_id }}" class="cierre-nombre">{{ v.cliente_nombre }}</a>
+        <span class="cierre-zona">{{ v.zona }}</span>
+      </div>
+
+      <div class="cierre-detalle">
+        {% if v.articulos %}
+          <span class="cierre-articulos">📦 {{ v.articulos }}</span>
+        {% endif %}
+        <div class="cierre-fila-nums">
+          <span class="cierre-monto">{{ v.monto | pesos }}</span>
+          {% if v.forma_pago %}
+            <span class="cierre-pago-badge">{{ v.forma_pago }}</span>
+          {% endif %}
+          {% if v.saldo_pendiente > 0 %}
+            <span class="cierre-saldo">Saldo: {{ v.saldo_pendiente | pesos }}</span>
+          {% endif %}
+        </div>
+        {% if v.observaciones %}
+          <span class="cierre-obs">{{ v.observaciones }}</span>
+        {% endif %}
+      </div>
+
+      <!-- Botón FACTURADO — HTMX elimina la fila al confirmar -->
+      <button
+        class="btn-facturar"
+        id="btn-facturar-{{ v.id }}"
+        hx-post="/visitas/{{ v.id }}/facturar"
+        hx-target="#visita-{{ v.id }}"
+        hx-swap="outerHTML"
+        hx-confirm="¿Marcar como FACTURADO a {{ v.cliente_nombre }}?"
+        aria-label="Marcar como facturado">
+        ✓ FACTURADO
+      </button>
+    </li>
+    {% endfor %}
+  </ul>
+</section>
+
+{% else %}
+  {% if facturadas %}
+  <div class="aviso-ok">✅ ¡Todo facturado por hoy!</div>
+  {% else %}
+  <div class="estado-vacio">
+    <p>📭 No hay ventas registradas hoy todavía.</p>
+    <p style="font-size:0.85rem; margin-top:8px;">Las ventas aparecen acá cuando registrás una visita con "Compró: SÍ".</p>
+  </div>
+  {% endif %}
+{% endif %}
+
+<!-- ============================================================
+     CLIENTES VISITADOS SIN COMPRA
+     ============================================================ -->
+{% if sin_compra %}
+<section aria-label="Visitas sin venta">
+  <h2 class="zona-header" style="margin-top:24px;">👣 Visitados sin venta ({{ sin_compra | length }})</h2>
+  <ul class="cierre-lista cierre-lista--sinventa" role="list">
+    {% for v in sin_compra %}
+    <li class="cierre-item cierre-item--sinventa">
+      <div class="cierre-cliente">
+        <a href="/clientes/{{ v.cliente_id }}" class="cierre-nombre">{{ v.cliente_nombre }}</a>
+        <span class="cierre-zona">{{ v.zona }}</span>
+      </div>
+      {% if v.observaciones %}
+        <span class="cierre-obs">{{ v.observaciones }}</span>
+      {% endif %}
+    </li>
+    {% endfor %}
+  </ul>
+</section>
+{% endif %}
+
+<!-- ============================================================
+     YA FACTURADAS HOY (historial del día)
+     ============================================================ -->
+{% if facturadas %}
+<details class="cierre-historial-wrap">
+  <summary class="zona-header" style="cursor:pointer; list-style:none;">
+    ✅ Ya facturadas hoy ({{ facturadas | length }})
+    <span style="font-weight:400; font-size:0.85rem;">▼</span>
+  </summary>
+  <ul class="cierre-lista" role="list" style="margin-top:8px;">
+    {% for v in facturadas %}
+    <li class="cierre-item cierre-item--facturada">
+      <div class="cierre-cliente">
+        <a href="/clientes/{{ v.cliente_id }}" class="cierre-nombre">{{ v.cliente_nombre }}</a>
+        <span class="cierre-zona">{{ v.zona }}</span>
+      </div>
+      <div class="cierre-detalle">
+        {% if v.articulos %}
+          <span class="cierre-articulos">📦 {{ v.articulos }}</span>
+        {% endif %}
+        <div class="cierre-fila-nums">
+          <span class="cierre-monto">{{ v.monto | pesos }}</span>
+          {% if v.forma_pago %}
+            <span class="cierre-pago-badge">{{ v.forma_pago }}</span>
+          {% endif %}
+        </div>
+      </div>
+      <span class="cierre-tag-ok">✓ Facturado</span>
+    </li>
+    {% endfor %}
+  </ul>
+</details>
+{% endif %}
+
+{% endblock %}

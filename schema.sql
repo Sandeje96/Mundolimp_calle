@@ -45,3 +45,8 @@ CREATE UNIQUE INDEX IF NOT EXISTS idx_clientes_norm ON clientes(nombre_norm);
 CREATE INDEX IF NOT EXISTS idx_visitas_cliente ON visitas(cliente_id);
 CREATE INDEX IF NOT EXISTS idx_visitas_fecha   ON visitas(fecha);
 CREATE INDEX IF NOT EXISTS idx_clientes_zona   ON clientes(zona);
+
+-- Migración v2: columnas de facturación en visitas
+-- ALTER TABLE ... ADD COLUMN IF NOT EXISTS es idempotente → seguro en cada deploy
+ALTER TABLE visitas ADD COLUMN IF NOT EXISTS facturado    BOOLEAN    NOT NULL DEFAULT FALSE;
+ALTER TABLE visitas ADD COLUMN IF NOT EXISTS facturado_en TIMESTAMPTZ;

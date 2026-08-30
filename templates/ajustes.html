@@ -8,6 +8,17 @@
 <div class="aviso-ok" role="alert" id="aviso-guardado">✅ Ajustes guardados.</div>
 {% endif %}
 
+{% if reset_ok is defined and reset_ok %}
+<div class="aviso-ok" role="alert" id="aviso-reset">
+  ✅ Reset aplicado. Todos los clientes quedaron como "Sin visitar". Ahora podés recorrerlos y registrar cada visita desde cero.
+</div>
+{% endif %}
+
+{% if reset_error is defined and reset_error %}
+<div class="aviso-error" role="alert">❌ PIN incorrecto. El reset no se aplicó.</div>
+{% endif %}
+
+<!-- Ajustes generales -->
 <form method="post" action="/ajustes" id="form-ajustes">
   <div class="campo-grupo">
     <label for="dias_aviso">
@@ -39,11 +50,40 @@
   <a href="/logout" class="btn btn-secundario" id="btn-logout">🔒 Cerrar sesión</a>
 </div>
 
+<!-- Reset de clientes -->
+<details class="detalle-peligro" id="detalle-reset">
+  <summary>⚠️ Reiniciar semáforo de clientes</summary>
+
+  <p class="campo-ayuda" style="margin: 12px 0;">
+    Esto pone <strong>todos los clientes como "Sin visitar"</strong> (azul). Sirve para arrancar de cero con datos reales.
+    El historial de visitas anteriores <strong>no se borra</strong>.
+  </p>
+  <p class="campo-ayuda" style="margin-bottom:12px;">
+    Ingresá tu PIN para confirmar:
+  </p>
+
+  <form method="post" action="/admin/reset-clientes" id="form-reset"
+        onsubmit="return confirm('¿Estás seguro? Todos los clientes quedarán como Sin Visitar.')">
+    <div class="campo-grupo">
+      <label for="pin-reset" class="sr-only">PIN de confirmación</label>
+      <input type="password" id="pin-reset" name="pin"
+             class="input" inputmode="numeric"
+             placeholder="Tu PIN" autocomplete="off" required>
+    </div>
+    <button type="submit" class="btn btn-peligro" id="btn-reset-clientes">
+      Reiniciar todos los clientes
+    </button>
+  </form>
+</details>
+
 {% endblock %}
 
 {% block scripts %}
 <script>
   const aviso = document.getElementById('aviso-guardado');
   if (aviso) setTimeout(() => aviso.remove(), 3000);
+  const avisoReset = document.getElementById('aviso-reset');
+  if (avisoReset) setTimeout(() => avisoReset.remove(), 6000);
 </script>
 {% endblock %}
+

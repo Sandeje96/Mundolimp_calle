@@ -717,3 +717,86 @@ async def admin_seed(request: Request, pin: str = Form(...)):
         conn.commit()
 
     return HTMLResponse("<h2>✅ Seed ejecutado correctamente.</h2><a href='/'>Ir a Hoy</a>")
+
+
+# ---------------------------------------------------------------------------
+# CIERRE DEL DÍA — ventas del día pendientes de facturar
+# ---------------------------------------------------------------------------
+@app.get("/cierre", response_class=HTMLResponse)
+async def cierre(request: Request):
+    hoy = hoy_arg()
+
+    # Todas las visitas de hoy, con datos del cliente
+    todas_hoy = db.fetchall(
+        """
+        SELECT v.id, v.fecha, v.compro, v.articulos, v.forma_pago,
+               v.monto, v.saldo_pendiente, v.observaciones,
+               v.facturado, v.facturado_en,
+               c.id AS cliente_id, c.nombre AS cliente_nombre, c.zona
+        FROM visitas v
+        JOIN clientes c ON c.id = v.cliente_id
+        WHERE v.fecha = %s
+        ORDER BY v.compro DESC, c.nombre
+        """,
+        (hoy,),
+    )
+
+    pendientes  = [v for v in todas_hoy if v["compro"] and not v["facturado"]]
+    facturadas  = [v for v in todas_hoy if v["compro"] and v["facturado"]]
+    sin_compra  = [v for v in todas_hoy if not v["compro"]]
+
+    from decimal import Decimal
+    total_pendiente = sum(v["monto"] for v in pendientes)
+    total_facturado = sum(v["monto"] for v in facturadas)
+
+    return templates.TemplateResponse("cierre.html", {
+        "request": request,
+        "pendientes": pendientes,
+        "facturadas": facturadas,
+        "sin_compra": sin_compra,
+        "total_pendiente": total_pendiente,
+        "total_facturado": total_facturado,
+        "hoy": hoy,
+    })
+
+
+# ---------------------------------------------------------------------------
+# FACTURAR una visita — llamado por HTMX, elimina la fila del listado
+# ---------------------------------------------------------------------------
+@app.post("/visitas/{visita_id}/facturar", response_class=HTMLResponse)
+async def facturar_visita(visita_id: int):
+    from datetime import datetime
+    ahora = datetime.now(TZ)
+    db.execute(
+        "UPDATE visitas SET facturado = TRUE, facturado_en = %s WHERE id = %s",
+        (ahora, visita_id),
+    )
+    # Devolver string vacío → HTMX reemplaza la fila con nada (desaparece)
+    return HTMLResponse("")
+
+
+# ---------------------------------------------------------------------------
+# ADMIN RESET CLIENTES — limpia ultima_visita para reiniciar el semáforo
+# ---------------------------------------------------------------------------
+@app.post("/admin/reset-clientes")
+async def reset_clientes(request: Request, pin: str = Form(...)):
+    if pin != APP_PIN:
+        return templates.TemplateResponse("ajustes.html", {
+            "request": request,
+            "dias_aviso": db.get_ajuste("dias_aviso", "2"),
+            "frecuencia_default": db.get_ajuste("frecuencia_default", "10"),
+            "guardado": False,
+            "reset_error": True,
+            "reset_ok": False,
+        }, status_code=403)
+
+    db.execute("UPDATE clientes SET ultima_visita = NULL")
+
+    return templates.TemplateResponse("ajustes.html", {
+        "request": request,
+        "dias_aviso": db.get_ajuste("dias_aviso", "2"),
+        "frecuencia_default": db.get_ajuste("frecuencia_default", "10"),
+        "guardado": False,
+        "reset_error": False,
+        "reset_ok": True,
+    })

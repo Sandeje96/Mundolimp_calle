@@ -25,11 +25,15 @@
 
   {% endblock %}
 
-  <!-- Barra de navegación inferior — 4 íconos, apta para el pulgar -->
+  <!-- Barra de navegación inferior — 5 íconos, apta para el pulgar -->
   <nav class="nav-bottom" role="navigation" aria-label="Navegación principal">
     <a href="/"        class="nav-item {% if request.url.path == '/' %}nav-item--active{% endif %}" id="nav-hoy">
       <span class="nav-icon">📋</span>
       <span class="nav-label">Hoy</span>
+    </a>
+    <a href="/cierre"  class="nav-item {% if request.url.path == '/cierre' %}nav-item--active{% endif %}" id="nav-cierre">
+      <span class="nav-icon">🧾</span>
+      <span class="nav-label">Cierre</span>
     </a>
     <a href="/agenda"  class="nav-item {% if request.url.path == '/agenda' %}nav-item--active{% endif %}" id="nav-agenda">
       <span class="nav-icon">📅</span>

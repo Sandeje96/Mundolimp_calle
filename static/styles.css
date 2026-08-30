@@ -176,9 +176,9 @@ ul, ol {
   align-items: center;
   justify-content: center;
   min-height: var(--tacto);
-  padding: 6px 4px;
+  padding: 5px 2px;
   color: var(--texto-2);
-  font-size: 0.72rem;
+  font-size: 0.65rem;   /* un poco más chico para que quepan 5 ítems */
   font-weight: 500;
   transition: color 0.15s, background 0.15s;
   border-radius: 4px;
@@ -1026,4 +1026,201 @@ ul, ol {
   .btn-grupo-grande {
     max-width: 360px;
   }
+
+  .nav-item {
+    font-size: 0.72rem;  /* en tablet/desktop recuperamos el tamaño original */
+    padding: 6px 4px;
+  }
+}
+
+/* ============================================================
+   20. CIERRE DEL DÍA
+   ============================================================ */
+
+/* Tarjetas de totales */
+.cierre-totales {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--esp-s);
+  margin-bottom: var(--esp-l);
+}
+
+.cierre-total-card {
+  border-radius: 12px;
+  padding: var(--esp-m);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  border: 2px solid transparent;
+}
+
+.cierre-total-card--pendiente {
+  background: var(--amarillo-bg);
+  border-color: var(--amarillo);
+}
+
+.cierre-total-card--ok {
+  background: var(--verde-bg);
+  border-color: var(--verde);
+}
+
+.cierre-total-monto {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--texto);
+}
+
+.cierre-total-label {
+  font-size: 0.75rem;
+  color: var(--texto-2);
+  text-align: center;
+}
+
+/* Lista de ítems del cierre */
+.cierre-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: var(--esp-l);
+}
+
+.cierre-item {
+  border-radius: 10px;
+  padding: var(--esp-m);
+  border: 1px solid var(--borde);
+  background: var(--blanco);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.cierre-item--pendiente {
+  border-left: 5px solid var(--amarillo);
+  background: var(--amarillo-bg);
+}
+
+.cierre-item--facturada {
+  border-left: 5px solid var(--verde);
+  background: var(--verde-bg);
+  opacity: 0.8;
+}
+
+.cierre-item--sinventa {
+  border-left: 5px solid var(--gris);
+  background: var(--gris-bg);
+  opacity: 0.85;
+}
+
+.cierre-lista--sinventa .cierre-item {
+  padding: var(--esp-s) var(--esp-m);
+}
+
+.cierre-cliente {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.cierre-nombre {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--texto);
+}
+
+.cierre-zona {
+  font-size: 0.8rem;
+  color: var(--texto-2);
+}
+
+.cierre-detalle {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 0.9rem;
+}
+
+.cierre-articulos {
+  color: var(--texto);
+  font-weight: 500;
+}
+
+.cierre-fila-nums {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.cierre-monto {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--texto);
+}
+
+.cierre-pago-badge {
+  background: var(--primario);
+  color: var(--blanco);
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 10px;
+  text-transform: uppercase;
+}
+
+.cierre-saldo {
+  color: var(--rojo);
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+
+.cierre-obs {
+  color: var(--texto-2);
+  font-style: italic;
+  font-size: 0.85rem;
+}
+
+/* Botón FACTURADO */
+.btn-facturar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 48px;
+  width: 100%;
+  border-radius: 8px;
+  border: none;
+  background: var(--verde);
+  color: var(--blanco);
+  font-size: 1rem;
+  font-weight: 700;
+  font-family: var(--fuente);
+  cursor: pointer;
+  letter-spacing: 0.05em;
+  transition: background 0.15s, opacity 0.15s;
+}
+
+.btn-facturar:active,
+.btn-facturar:hover {
+  background: var(--verde-badge);
+}
+
+.cierre-tag-ok {
+  display: inline-flex;
+  align-items: center;
+  height: 32px;
+  padding: 0 12px;
+  border-radius: 16px;
+  background: var(--verde);
+  color: var(--blanco);
+  font-size: 0.8rem;
+  font-weight: 700;
+  align-self: flex-start;
+}
+
+.cierre-historial-wrap {
+  margin-top: var(--esp-l);
+  border: 2px solid var(--verde);
+  border-radius: 10px;
+  padding: var(--esp-s) var(--esp-m);
 }
