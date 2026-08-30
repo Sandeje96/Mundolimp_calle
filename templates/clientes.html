@@ -12,15 +12,17 @@
     id="q"
     name="q"
     value="{{ q }}"
-    placeholder="Buscar cliente…"
+    placeholder="Buscar por nombre o zona…"
     class="input-buscar"
     hx-get="/clientes"
-    hx-trigger="input changed delay:300ms, search"
+    hx-trigger="input changed delay:200ms, search"
     hx-target="#lista-clientes"
-    hx-include="#q,#zona-sel,#estado-sel"
+    hx-include="#zona-sel,#estado-sel"
+    hx-indicator="#buscador-spinner"
     autocomplete="off"
-    aria-label="Buscar cliente por nombre"
+    aria-label="Buscar cliente por nombre o zona"
   >
+  <span id="buscador-spinner" class="buscador-spinner htmx-indicator">⏳</span>
 </div>
 <div class="filtros-wrap">
   <select id="zona-sel" name="zona" class="select-filtro"

@@ -604,6 +604,24 @@ ul, ol {
 .buscador-wrap {
   padding: var(--esp-s) var(--esp-m) 4px;
   background: var(--primario);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Spinner de búsqueda — HTMX lo muestra durante la petición */
+.buscador-spinner {
+  font-size: 1rem;
+  /* htmx-indicator: oculto por defecto, visible con opacity durante request */
+  opacity: 0;
+  transition: opacity 0.15s;
+  flex-shrink: 0;
+}
+
+/* HTMX pone esta clase mientras carga */
+.htmx-indicator.htmx-request,
+.htmx-request .htmx-indicator {
+  opacity: 1;
 }
 
 .filtros-wrap {

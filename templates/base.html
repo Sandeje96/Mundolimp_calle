@@ -45,8 +45,8 @@
     </a>
   </nav>
 
-  <!-- HTMX desde CDN (14 KB gzip) -->
-  <script src="https://unpkg.com/htmx.org@1.9.12/dist/htmx.min.js" integrity="sha384-ujb1lZYygJmzgSwoxRggbCHcjc0rB2uodhGaSEuhsA5KSXS2HCHrFD08i86FmQk" crossorigin="anonymous"></script>
+  <!-- HTMX desde archivo local (no depende del CDN en producción) -->
+  <script src="/static/htmx.min.js"></script>
   {% block scripts %}{% endblock %}
 </body>
 </html>

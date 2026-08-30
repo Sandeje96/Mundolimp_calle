@@ -252,8 +252,13 @@ async def clientes_lista(request: Request, q: str = "", zona: str = "", estado: 
     params: list = []
 
     if q:
-        sql += " AND nombre_norm ILIKE %s"
-        params.append(f"%{normalizar_nombre(q)}%")
+        # Dividir el query en palabras: cada palabra debe aparecer
+        # en el nombre O en la zona. Así "GOM QUAR" encuentra
+        # "GOMERIA..." de la zona Quaranta.
+        palabras = normalizar_nombre(q).split()
+        for palabra in palabras:
+            sql += " AND (nombre_norm ILIKE %s OR UPPER(zona) ILIKE %s)"
+            params.extend([f"%{palabra}%", f"%{palabra}%"])
 
     if zona:
         sql += " AND zona = %s"
