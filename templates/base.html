@@ -16,7 +16,10 @@
 
   <header class="app-header">
     <h1 class="app-title">{% block page_title %}MUNDOLIMP{% endblock %}</h1>
-    {% block header_extra %}{% endblock %}
+    <div class="header-acciones">
+      {% block header_extra %}{% endblock %}
+      <a href="/ajustes" class="btn-ajustes" id="btn-ir-ajustes" aria-label="Ajustes">⚙️</a>
+    </div>
   </header>
 
   <main class="app-main">
